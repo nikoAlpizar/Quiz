@@ -1,0 +1,141 @@
+import math
+
+class Forma:
+    def area(self):
+        pass
+
+
+class Circulo(Forma):
+    def _init_(self, radio):
+        self.radio = radio
+
+    def area(self):
+        return math.pi * (self.radio ** 2)
+
+
+class Cuadrado(Forma):
+    def _init_(self, lado):
+        self.lado = lado
+
+    def area(self):
+        return self.lado ** 2
+
+
+class Rombo(Forma):
+    def _init_(self, diagonal_mayor, diagonal_menor):
+        self.diagonal_mayor = diagonal_mayor
+        self.diagonal_menor = diagonal_menor
+
+    def area(self):
+        return (self.diagonal_mayor * self.diagonal_menor) / 2
+
+
+class Trapecio(Forma):
+    def _init_(self, base_mayor, base_menor, altura):
+        self.base_mayor = base_mayor
+        self.base_menor = base_menor
+        self.altura = altura
+
+    def area(self):
+        return ((self.base_mayor + self.base_menor) * self.altura) / 2
+
+
+class Triangulo(Forma):
+    def _init_(self, tipo, **kwargs):
+        self.tipo = tipo.lower()
+        self.datos = kwargs
+
+    def area(self):
+        if self.tipo == "equilatero":
+            lado = self.datos.get("lado")
+            return (math.sqrt(3) / 4) * (lado ** 2)
+        elif self.tipo == "isosceles":
+            base = self.datos.get("base")
+            altura = self.datos.get("altura")
+            return (base * altura) / 2
+        elif self.tipo == "escaleno":
+            a = self.datos.get("a")
+            b = self.datos.get("b")
+            c = self.datos.get("c")
+            s = (a + b + c) / 2
+            return math.sqrt(s * (s - a) * (s - b) * (s - c))
+        else:
+            raise ValueError("Tipo de triángulo no válido")
+
+
+def pedir_float(mensaje):
+    while True:
+        try:
+            valor = float(input(mensaje))
+            if valor <= 0:
+                print("El valor debe ser mayor que cero.")
+                continue
+            return valor
+        except ValueError:
+            print("Entrada inválida. Ingrese un número válido.")
+
+
+while True:
+    print("\n--- Calculadora de Áreas ---")
+    print("1. Círculo")
+    print("2. Cuadrado")
+    print("3. Rombo")
+    print("4. Trapecio")
+    print("5. Triángulo")
+    print("6. Salir")
+
+    opcion = input("Seleccione una opción: ")
+
+    if opcion == "1":
+        radio = pedir_float("Ingrese el radio: ")
+        figura = Circulo(radio)
+        print(f"Área del círculo: {figura.area():.2f}")
+
+    elif opcion == "2":
+        lado = pedir_float("Ingrese el lado: ")
+        figura = Cuadrado(lado)
+        print(f"Área del cuadrado: {figura.area():.2f}")
+
+    elif opcion == "3":
+        d_mayor = pedir_float("Ingrese la diagonal mayor: ")
+        d_menor = pedir_float("Ingrese la diagonal menor: ")
+        figura = Rombo(d_mayor, d_menor)
+        print(f"Área del rombo: {figura.area():.2f}")
+
+    elif opcion == "4":
+        b_mayor = pedir_float("Ingrese la base mayor: ")
+        b_menor = pedir_float("Ingrese la base menor: ")
+        altura = pedir_float("Ingrese la altura: ")
+        figura = Trapecio(b_mayor, b_menor, altura)
+        print(f"Área del trapecio: {figura.area():.2f}")
+
+    elif opcion == "5":
+        tipo = input("Ingrese el tipo de triángulo (equilatero, isosceles, escaleno): ").strip().lower()
+        if tipo == "equilatero":
+            lado = pedir_float("Ingrese el lado: ")
+            figura = Triangulo(tipo, lado=lado)
+        elif tipo == "isosceles":
+            base = pedir_float("Ingrese la base: ")
+            altura = pedir_float("Ingrese la altura: ")
+            figura = Triangulo(tipo, base=base, altura=altura)
+        elif tipo == "escaleno":
+            a = pedir_float("Ingrese el lado a: ")
+            b = pedir_float("Ingrese el lado b: ")
+            c = pedir_float("Ingrese el lado c: ")
+            if a + b > c and a + c > b and b + c > a:
+                figura = Triangulo(tipo, a=a, b=b, c=c)
+            else:
+                print("Los lados no forman un triángulo válido.")
+                continue
+        else:
+            print("Tipo de triángulo no válido.")
+            continue
+
+        print(f"Área del triángulo {tipo}: {figura.area():.2f}")
+
+    elif opcion == "6":
+        print("Saliendo del programa...")
+        break
+
+    else:
+        print("Opción inválida, intente de nuevo.")
